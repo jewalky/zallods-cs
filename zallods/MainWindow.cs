@@ -38,6 +38,13 @@ namespace zallods
 
         protected override void OnLoad(EventArgs e)
         {
+            GL.Enable(EnableCap.Texture1D); // for palettes
+            GL.Enable(EnableCap.Texture2D); // for actual textures
+
+            // init alpha blending
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
             MainShader = new Rendering.Shader();
             MainShader.AddShader(ShaderType.VertexShader, System.IO.File.ReadAllText("data/shaders/main/main.vert"));
             MainShader.AddShader(ShaderType.FragmentShader, System.IO.File.ReadAllText("data/shaders/main/main.frag"));
@@ -56,9 +63,29 @@ namespace zallods
             
         }
 
+        int FPS_Current = 0;
+        int FPS_LastTicks = 0;
+        int FPS_Counter = 0;
+        public int FPS
+        {
+            get
+            {
+                return FPS_Current;
+            }
+        }
+        
         static Rendering.VertexBuffer vbo = null;
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            FPS_Counter++;
+            if (GetTickCount() - FPS_LastTicks > 1000)
+            {
+                FPS_Current = FPS_Counter - 1;
+                FPS_Counter = 1;
+                FPS_LastTicks = GetTickCount();
+                //Console.WriteLine("FPS = {0}", FPS_Current);
+            }
+
             if (vbo == null)
                 vbo = new Rendering.VertexBuffer();
 

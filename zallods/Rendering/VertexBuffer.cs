@@ -86,6 +86,11 @@ namespace zallods.Rendering
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
             GL.EnableClientState(ArrayCap.ColorArray);
+            GL.DisableClientState(ArrayCap.EdgeFlagArray);
+            GL.DisableClientState(ArrayCap.FogCoordArray);
+            GL.DisableClientState(ArrayCap.IndexArray);
+            GL.DisableClientState(ArrayCap.NormalArray);
+            GL.DisableClientState(ArrayCap.SecondaryColorArray);
             
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBOID);
             GL.ColorPointer(4, ColorPointerType.Float, Vertex.StructSize, Vertex.ColorOffset);
