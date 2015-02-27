@@ -1,8 +1,0 @@
-w:\dev\zallods\zallods\bin\Debug\zallods.exe
-w:\dev\zallods\zallods\bin\Debug\zallods.pdb
-w:\dev\zallods\zallods\bin\Debug\OpenTK.dll
-w:\dev\zallods\zallods\bin\Debug\OpenTK.pdb
-w:\dev\zallods\zallods\bin\Debug\OpenTK.xml
-w:\dev\zallods\zallods\obj\Debug\ResolveAssemblyReference.cache
-w:\dev\zallods\zallods\obj\Debug\zallods.exe
-w:\dev\zallods\zallods\obj\Debug\zallods.pdb
