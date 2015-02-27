@@ -134,6 +134,49 @@ namespace zallods.Rendering
             }
         }
 
+        public void SetUniform(String name, params int[] values)
+        {
+            if (ShaderID <= 0)
+                throw new RenderingException("Can't set uniforms in an invalid program!");
+            if (!ShaderCompiled)
+                throw new RenderingException("Can't set uniforms in a not-yet-compiled program!");
+            if (values.Length <= 0)
+                return;
+            if (values.Length > 4)
+                throw new RenderingException("Uniform size larger than 4 is not supported.");
+
+            int prog = GL.GetInteger(GetPName.CurrentProgram);
+            GL.UseProgram(ShaderID);
+
+            try
+            {
+                int uloc = GL.GetUniformLocation(ShaderID, name);
+                if (uloc < 0)
+                    throw new RenderingException("Nonexistent uniform name.");
+                switch (values.Length)
+                {
+                    case 1:
+                        GL.Uniform1(uloc, values[0]);
+                        break;
+                    case 2:
+                        GL.Uniform2(uloc, values[0], values[1]);
+                        break;
+                    case 3:
+                        GL.Uniform3(uloc, values[0], values[1], values[2]);
+                        break;
+                    case 4:
+                        GL.Uniform4(uloc, values[0], values[1], values[2], values[3]);
+                        break;
+                }
+
+                RenderingException.FromGLError();
+            }
+            finally
+            {
+                GL.UseProgram(prog);
+            }
+        }
+
         public void Activate()
         {
             if (ShaderID <= 0)

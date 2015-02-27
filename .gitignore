@@ -1,2 +1,5 @@
+*.exe
+*.dll
+*.pdb
 zallods/bin
-zallods/bin/*
+zallods/obj

@@ -13,6 +13,13 @@ namespace zallods
     class MainWindow : GameWindow
     {
         private static Rendering.Shader MainShader = null;
+        public static Rendering.Shader Shader
+        {
+            get
+            {
+                return MainShader;
+            }
+        }
 
         public MainWindow() : base(640, 480)
         {
@@ -32,15 +39,10 @@ namespace zallods
                 Exit();
                 return;
             }
-
-
         }
 
         protected override void OnLoad(EventArgs e)
         {
-            GL.Enable(EnableCap.Texture1D); // for palettes
-            GL.Enable(EnableCap.Texture2D); // for actual textures
-
             // init alpha blending
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
@@ -49,6 +51,10 @@ namespace zallods
             MainShader.AddShader(ShaderType.VertexShader, System.IO.File.ReadAllText("data/shaders/main/main.vert"));
             MainShader.AddShader(ShaderType.FragmentShader, System.IO.File.ReadAllText("data/shaders/main/main.frag"));
             MainShader.Compile();
+            RenderStencil = RenderStencil;
+            RenderPaletted = RenderPaletted;
+            MainShader.SetUniform("tex1", (int)0);
+            MainShader.SetUniform("tex2", (int)1);
         }
 
         protected override void OnResize(EventArgs e)
@@ -73,8 +79,7 @@ namespace zallods
                 return FPS_Current;
             }
         }
-        
-        static Rendering.VertexBuffer vbo = null;
+
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             FPS_Counter++;
@@ -86,26 +91,17 @@ namespace zallods
                 //Console.WriteLine("FPS = {0}", FPS_Current);
             }
 
-            if (vbo == null)
-                vbo = new Rendering.VertexBuffer();
-
-            GL.ClearColor(0f, 0f, 0f, 0f);
+            GL.ClearColor(0f, 0f, 0.5f, 0f);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
             MainShader.Activate();
+            // start actual rendering
 
-            // simulate fixed pipeline style vertex pushing
-            vbo.FixedReset();
-            vbo.FixedColor4f(1f, 1f, 1f, 1f);
-            vbo.FixedVertex2f(0f, 0f);
-            vbo.FixedVertex2f(32f, 0f);
-            vbo.FixedVertex2f(32f, 32f);
-            vbo.FixedVertex2f(0f, 32f);
-            vbo.Update();
-            vbo.Draw(PrimitiveType.Quads);
+            //RenderStencil = true;
+            //img.Render(8, 0, 0);
+            //RenderStencil = false;
 
+            // finish actual rendering
             MainShader.Deactivate();
-
             SwapBuffers();
         }
 
@@ -198,6 +194,37 @@ namespace zallods
             Stopwatch.Start(); // initialize tick counter
             while (DoMainLoop())
                 Sleep(1);
+        }
+
+        private static bool bRenderPaletted = false;
+        private static bool bRenderStencil = false;
+
+        public static bool RenderPaletted
+        {
+            get
+            {
+                return bRenderPaletted;
+            }
+            set
+            {
+                bRenderPaletted = value;
+                if (MainShader != null)
+                    MainShader.SetUniform("main_paletted", bRenderPaletted ? 1f : 0f);
+            }
+        }
+
+        public static bool RenderStencil
+        {
+            get
+            {
+                return bRenderStencil;
+            }
+            set
+            {
+                bRenderStencil = value;
+                if (MainShader != null)
+                    MainShader.SetUniform("main_stencil", bRenderStencil ? 1f : 0f);
+            }
         }
     }
 }
