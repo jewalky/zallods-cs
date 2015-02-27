@@ -91,7 +91,7 @@ namespace zallods
                 //Console.WriteLine("FPS = {0}", FPS_Current);
             }
 
-            GL.ClearColor(0f, 0f, 0.5f, 0f);
+            GL.ClearColor(0f, 0f, 0f, 0f);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             MainShader.Activate();
             // start actual rendering
